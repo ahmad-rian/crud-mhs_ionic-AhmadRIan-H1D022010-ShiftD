@@ -1,0 +1,158 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Data Mahasiswa</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Data Mahasiswa</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <!-- Button tambah -->
+  <ion-card>
+    <ion-button (click)="openModalTambah(true)" expand="block" [disabled]="isLoading">
+      <ion-icon name="add-outline" slot="start"></ion-icon>
+      Tambah Mahasiswa
+    </ion-button>
+  </ion-card>
+
+  <!-- Loading indicator -->
+  <ion-progress-bar type="indeterminate" *ngIf="isLoading"></ion-progress-bar>
+
+  <!-- Modal tambah -->
+  <ion-modal [isOpen]="modalTambah" (didDismiss)="cancel()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-button (click)="cancel()">
+              <ion-icon name="close-outline" slot="icon-only"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+          <ion-title>Tambah Mahasiswa</ion-title>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content class="ion-padding">
+        <form (ngSubmit)="tambahMahasiswa()">
+          <ion-item>
+            <ion-label position="floating">Nama Mahasiswa</ion-label>
+            <ion-input 
+              required 
+              [(ngModel)]="mahasiswaForm.nama" 
+              name="nama"
+              placeholder="Masukkan Nama Mahasiswa" 
+              type="text"
+            ></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="floating">Jurusan Mahasiswa</ion-label>
+            <ion-input 
+              required 
+              [(ngModel)]="mahasiswaForm.jurusan" 
+              name="jurusan"
+              placeholder="Masukkan Jurusan Mahasiswa" 
+              type="text"
+            ></ion-input>
+          </ion-item>
+
+          <div class="ion-padding">
+            <ion-button 
+              type="submit" 
+              expand="block"
+              [disabled]="isLoading"
+            >
+              <ion-icon name="save-outline" slot="start"></ion-icon>
+              {{ isLoading ? 'Menyimpan...' : 'Simpan' }}
+            </ion-button>
+          </div>
+        </form>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <!-- Modal edit -->
+  <ion-modal [isOpen]="modalEdit" (didDismiss)="cancel()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-button (click)="cancel()">
+              <ion-icon name="close-outline" slot="icon-only"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+          <ion-title>Edit Mahasiswa</ion-title>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content class="ion-padding">
+        <form (ngSubmit)="editMahasiswa()">
+          <ion-item>
+            <ion-label position="floating">Nama Mahasiswa</ion-label>
+            <ion-input 
+              required 
+              [(ngModel)]="editForm.nama" 
+              name="nama"
+              placeholder="Masukkan Nama Mahasiswa" 
+              type="text"
+            ></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="floating">Jurusan Mahasiswa</ion-label>
+            <ion-input 
+              required 
+              [(ngModel)]="editForm.jurusan" 
+              name="jurusan"
+              placeholder="Masukkan Jurusan Mahasiswa" 
+              type="text"
+            ></ion-input>
+          </ion-item>
+
+          <div class="ion-padding">
+            <ion-button 
+              type="submit" 
+              expand="block"
+              [disabled]="isLoading"
+            >
+              <ion-icon name="save-outline" slot="start"></ion-icon>
+              {{ isLoading ? 'Menyimpan...' : 'Simpan Perubahan' }}
+            </ion-button>
+          </div>
+        </form>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <!-- Empty state -->
+  <ion-card *ngIf="!isLoading && dataMahasiswa.length === 0">
+    <ion-card-content class="ion-text-center">
+      <ion-icon name="documents-outline" size="large"></ion-icon>
+      <p>Belum ada data mahasiswa</p>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- List data mahasiswa -->
+  <ion-list *ngIf="dataMahasiswa.length > 0">
+    <ion-item-sliding *ngFor="let item of dataMahasiswa">
+      <ion-item>
+        <ion-label>
+          <h2>{{ item.nama }}</h2>
+          <p>{{ item.jurusan }}</p>
+        </ion-label>
+        <ion-buttons slot="end">
+          <ion-button (click)="openModalEdit(true, item.id)">
+            <ion-icon name="create-outline" slot="icon-only"></ion-icon>
+          </ion-button>
+          <ion-button color="danger" (click)="hapusMahasiswa(item.id)">
+            <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-item>
+    </ion-item-sliding>
+  </ion-list>
+</ion-content>
